@@ -52,11 +52,19 @@ class WeatherMapDataSource_rrd extends WeatherMapDataSource {
 
     function Recognise($targetstring)
     {
-        if(preg_match("/^(.*\.rrd):([\-a-zA-Z0-9_]+):([\-a-zA-Z0-9_]+)$/",$targetstring,$matches))
+        if(preg_match("/^(.*\.rrd)$/", $targetstring, $matches))
         {
             return TRUE;
         }
-        elseif(preg_match("/^(.*\.rrd)$/",$targetstring,$matches))
+        elseif (preg_match("/^rrd:(.*)$/", $targetstring, $matches))
+        {
+            return TRUE;
+        }
+        elseif (preg_match("/^(.*\.rrd):([\-a-zA-Z0-9_]+):([\-a-zA-Z0-9_]+)$/", $targetstring, $matches))
+        {
+            return TRUE;
+        }
+        elseif (preg_match( "/^rrd:(.*):([\-a-zA-Z0-9_]+):([\-a-zA-Z0-9_]+)$/", $targetstring, $matches))
         {
             return TRUE;
         }
@@ -486,7 +494,7 @@ class WeatherMapDataSource_rrd extends WeatherMapDataSource {
         $outbw = NULL;
         $data_time = 0;
 
-        if(preg_match("/^(.*\.rrd):([\-a-zA-Z0-9_]+):([\-a-zA-Z0-9_]+)$/",$targetstring,$matches))
+        if(preg_match("/^(.*):([\-a-zA-Z0-9_]+):([\-a-zA-Z0-9_]+)$/", $targetstring, $matches))
         {
             $rrdfile = $matches[1];
 
