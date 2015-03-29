@@ -4,54 +4,54 @@ include_once(dirname(__FILE__)."/../ds-common.php");
 
 class WeatherMapDataSource_dsstats extends WeatherMapDataSource {
 
-	function Init(&$map)
-	{
-		global $config;
-		if($map->context=='cacti')
-		{
-			if( !function_exists('db_fetch_row') )
-			{
-				wm_debug("ReadData DSStats: Cacti database library not found. [DSSTATS001]\n");
-				return(FALSE);
-			}
-			if(function_exists("api_plugin_is_enabled"))
-			{
-				if(! api_plugin_is_enabled('dsstats'))
-				{
-					wm_debug("ReadData DSStats: DSStats plugin not enabled (new-style). [DSSTATS002B]\n");
-					return(FALSE);
-				 }
-			}
-			else
-			{		
-				if( !isset($plugins) || !in_array('dsstats',$plugins))
-				{
-					wm_debug("ReadData DSStats: DSStats plugin not enabled (old-style). [DSSTATS002A]\n");
-					return(FALSE);
-				}
-			}		
-						
-			$sql = "show tables";
-			$result = db_fetch_assoc($sql) or die (mysql_error());
-			$tables = array();
-			
-			foreach($result as $index => $arr) {
-				foreach ($arr as $t) {
-					$tables[] = $t;
-				}
-			}
-			
-			if( !in_array('data_source_stats_hourly_last', $tables) )
-			{
-				wm_debug('ReadData DSStats: data_source_stats_hourly_last database table not found. [DSSTATS003]\n');
-				return(FALSE);
-			}			
-						
-			return(TRUE);
-		}
+    function Init(&$map)
+    {
+        global $config;
+        if($map->context=='cacti')
+        {
+            if( !function_exists('db_fetch_row') )
+            {
+                wm_debug("ReadData DSStats: Cacti database library not found. [DSSTATS001]\n");
+                return(FALSE);
+            }
+            if(function_exists("api_plugin_is_enabled"))
+            {
+                if(! api_plugin_is_enabled('dsstats'))
+                {
+                    wm_debug("ReadData DSStats: DSStats plugin not enabled (new-style). [DSSTATS002B]\n");
+                    return(FALSE);
+                 }
+            }
+            else
+            {
+                if( !isset($plugins) || !in_array('dsstats',$plugins))
+                {
+                    wm_debug("ReadData DSStats: DSStats plugin not enabled (old-style). [DSSTATS002A]\n");
+                    return(FALSE);
+                }
+            }
 
-		return(FALSE);
-	}
+            $sql = "show tables";
+            $result = db_fetch_assoc($sql) or die (mysql_error());
+            $tables = array();
+
+            foreach($result as $index => $arr) {
+                foreach ($arr as $t) {
+                    $tables[] = $t;
+                }
+            }
+
+            if( !in_array('data_source_stats_hourly_last', $tables) )
+            {
+                wm_debug('ReadData DSStats: data_source_stats_hourly_last database table not found. [DSSTATS003]\n');
+                return(FALSE);
+            }
+
+            return(TRUE);
+        }
+
+        return(FALSE);
+    }
 
 # dsstats:<datatype>:<local_data_id>:<rrd_name_in>:<rrd_name_out>
 

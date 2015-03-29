@@ -1,5 +1,5 @@
 <?php
-	
+
 require_once 'lib/editor.inc.php';
 require_once 'lib/Weathermap.class.php';
 require_once 'lib/geometry.php';
@@ -48,7 +48,7 @@ if( isset($_COOKIE['wmeditor']))
     
     if( (isset($parts[0])) && (intval($parts[0]) == 1) ) { $use_overlay = TRUE; }
     if( (isset($parts[1])) && (intval($parts[1]) == 1) ) { $use_relative_overlay = TRUE; }
-    if( (isset($parts[2])) && (intval($parts[2]) != 0) ) { $grid_snap_value = intval($parts[2]); }   
+    if( (isset($parts[2])) && (intval($parts[2]) != 0) ) { $grid_snap_value = intval($parts[2]); }
 }
 
 if ($FROM_CACTI==false) {
@@ -56,22 +56,22 @@ if ($FROM_CACTI==false) {
 // check if the goalposts have moved
 if( is_dir($cacti_base) && file_exists($cacti_base."/include/global.php") )
 {
-	// include the cacti-config, so we know about the database
-	include_once($cacti_base."/include/global.php");
-	$config['base_url'] = $cacti_url;
-	$cacti_found = TRUE;
+    // include the cacti-config, so we know about the database
+    include_once($cacti_base."/include/global.php");
+    $config['base_url'] = $cacti_url;
+    $cacti_found = TRUE;
 }
 elseif( is_dir($cacti_base) && file_exists($cacti_base."/include/config.php") )
 {
-	// include the cacti-config, so we know about the database
-	include_once($cacti_base."/include/config.php");
+    // include the cacti-config, so we know about the database
+    include_once($cacti_base."/include/config.php");
 
-	$config['base_url'] = $cacti_url;
-	$cacti_found = TRUE;
+    $config['base_url'] = $cacti_url;
+    $cacti_found = TRUE;
 }
 else
 {
-	$cacti_found = FALSE;
+    $cacti_found = FALSE;
 }
 }
 
@@ -94,12 +94,12 @@ $log = '';
 
 if(!wm_module_checks())
 {
-	print "<b>Required PHP extensions are not present in your mod_php/ISAPI PHP module. Please check your PHP setup to ensure you have the GD extension installed and enabled.</b><p>";
-	print "If you find that the weathermap tool itself is working, from the command-line or Cacti poller, then it is possible that you have two different PHP installations. The Editor uses the same PHP that webpages on your server use, but the main weathermap tool uses the command-line PHP interpreter.<p>";
-	print "<p>You should also run <a href=\"check.php\">check.php</a> to help make sure that there are no problems.</p><hr/>";
-	print "Here is a copy of the phpinfo() from your PHP web module, to help debugging this...<hr>";
-	phpinfo();
-	exit();
+    print "<b>Required PHP extensions are not present in your mod_php/ISAPI PHP module. Please check your PHP setup to ensure you have the GD extension installed and enabled.</b><p>";
+    print "If you find that the weathermap tool itself is working, from the command-line or Cacti poller, then it is possible that you have two different PHP installations. The Editor uses the same PHP that webpages on your server use, but the main weathermap tool uses the command-line PHP interpreter.<p>";
+    print "<p>You should also run <a href=\"check.php\">check.php</a> to help make sure that there are no problems.</p><hr/>";
+    print "Here is a copy of the phpinfo() from your PHP web module, to help debugging this...<hr>";
+    phpinfo();
+    exit();
 }
 
 if(isset($_REQUEST['action'])) { $action = $_REQUEST['action']; }
@@ -110,8 +110,8 @@ $weathermap_debugging=FALSE;
 
 if($mapname == '')
 {
-	// this is the file-picker/welcome page
-	show_editor_startpage();
+    // this is the file-picker/welcome page
+    show_editor_startpage();
 }
 else
 {  
@@ -238,323 +238,323 @@ else
 		break;
         
     case 'fetch_config':
-	    $map->ReadConfig($mapfile);
-	    header('Content-type: text/plain');
-	    $item_name = $_REQUEST['item_name'];
-	    $item_type = $_REQUEST['item_type'];
-	    
-	    $ok=FALSE;
+        $map->ReadConfig($mapfile);
+        header('Content-type: text/plain');
+        $item_name = $_REQUEST['item_name'];
+        $item_type = $_REQUEST['item_type'];
 
-	    if($item_type == 'node'){
-		if (isset($map->nodes[$item_name])) {
-		    print $map->nodes[$item_name]->WriteConfig();
-		    $ok = TRUE;
-		}
-	    }
-	    if($item_type == 'link') {
-		if(isset($map->links[$item_name])) {
-		    print $map->links[$item_name]->WriteConfig();
-		    $ok = TRUE;
-		}
-	    }
-		
-	    if (! $ok) { 
-	        print "# the request item didn't exist. That's probably a bug.\n"; 
-	    }
-		
-	    exit();
-	    break;
+        $ok=FALSE;
 
-	case "set_link_config":
-		$map->ReadConfig($mapfile);
+        if($item_type == 'node'){
+        if (isset($map->nodes[$item_name])) {
+            print $map->nodes[$item_name]->WriteConfig();
+            $ok = TRUE;
+        }
+        }
+        if($item_type == 'link') {
+        if(isset($map->links[$item_name])) {
+            print $map->links[$item_name]->WriteConfig();
+            $ok = TRUE;
+        }
+        }
 
-		$link_name = $_REQUEST['link_name'];
-		$link_config = fix_gpc_string($_REQUEST['item_configtext']);
+        if (! $ok) {
+            print "# the request item didn't exist. That's probably a bug.\n";
+        }
 
-		if(isset($map->links[$link_name])) {		                
-		    $map->links[$link_name]->config_override = $link_config;
-		    
-		    $map->WriteConfig($mapfile);
-		    // now clear and reload the map object, because the in-memory one is out of sync
-		    // - we don't know what changes the user made here, so we just have to reload.
-		    unset($map);
-		    $map = new WeatherMap;
-		    $map->context = 'editor';
-		    $map->ReadConfig($mapfile);
-		}
-		break;
+        exit();
+        break;
 
-	case "set_node_config":
-		$map->ReadConfig($mapfile);
+    case "set_link_config":
+        $map->ReadConfig($mapfile);
 
-		$node_name = $_REQUEST['node_name'];
-		$node_config = fix_gpc_string($_REQUEST['item_configtext']);
-		
-		if(isset($map->nodes[$node_name])) {		                
-		    $map->nodes[$node_name]->config_override = $node_config;
-		    
-		    $map->WriteConfig($mapfile);
-		    // now clear and reload the map object, because the in-memory one is out of sync
-		    // - we don't know what changes the user made here, so we just have to reload.
-		    unset($map);
-		    $map = new WeatherMap;
-		    $map->context = 'editor';
-		    $map->ReadConfig($mapfile);
-		}
-		break;
+        $link_name = $_REQUEST['link_name'];
+        $link_config = fix_gpc_string($_REQUEST['item_configtext']);
 
-	case "set_node_properties":
-		$map->ReadConfig($mapfile);
+        if(isset($map->links[$link_name])) {
+            $map->links[$link_name]->config_override = $link_config;
 
-		$node_name = $_REQUEST['node_name'];
-		$new_node_name = $_REQUEST['node_new_name'];
+            $map->WriteConfig($mapfile);
+            // now clear and reload the map object, because the in-memory one is out of sync
+            // - we don't know what changes the user made here, so we just have to reload.
+            unset($map);
+            $map = new WeatherMap;
+            $map->context = 'editor';
+            $map->ReadConfig($mapfile);
+        }
+        break;
 
-		// first check if there's a rename...
-		if($node_name != $new_node_name && strpos($new_node_name," ") === false)
-		{
-		    if(!isset($map->nodes[$new_node_name]))
-		    {
-			    // we need to rename the node first.					
-			    $newnode = $map->nodes[$node_name];
-			    $newnode->name = $new_node_name;
-			    $map->nodes[$new_node_name] = $newnode;
-			    unset($map->nodes[$node_name]);
+    case "set_node_config":
+        $map->ReadConfig($mapfile);
 
-			    // find the references elsewhere to the old node name.
-			    // First, relatively-positioned NODEs	
-			    foreach ($map->nodes as $node)
-			    {
-				    if($node->relative_to == $node_name)
-				    {
-					    $map->nodes[$node->name]->relative_to = $new_node_name;
-				    }
-			    }
-			    // Next, LINKs that use this NODE as an end.	
-			    foreach ($map->links as $link)
-			    {
-				if(isset($link->a))
-				{
-				    if($link->a->name == $node_name)
-				    {
-					    $map->links[$link->name]->a = $newnode;
-				    }
-				    if($link->b->name == $node_name)
-				    {
-					    $map->links[$link->name]->b = $newnode;
-				    }
-				    // while we're here, VIAs can also be relative to a NODE,
-				    // so check if any of those need to change
-				    if( (count($link->vialist)>0) )
-				    {
-					$vv=0;
-					foreach($link->vialist as $v)
-					{
-					    if(isset($v[2]) && $v[2] == $node_name)
-					    {
-						// die PHP4, die!
-						$map->links[$link->name]->vialist[$vv][2] = $new_node_name;
-					    }
-					    $vv++;
-					}                                            
-				    }
-				}
-			    }
-		    }
-		    else
-		    {
-			// silently ignore attempts to rename a node to an existing name
-			$new_node_name = $node_name;
-		    }
-		}
+        $node_name = $_REQUEST['node_name'];
+        $node_config = fix_gpc_string($_REQUEST['item_configtext']);
 
-		// by this point, and renaming has been done, and new_node_name will always be the right name
-		$map->nodes[$new_node_name]->label = wm_editor_sanitize_string($_REQUEST['node_label']);
-		$map->nodes[$new_node_name]->infourl[IN] = wm_editor_sanitize_string($_REQUEST['node_infourl']);
-		
-		$urls = preg_split('/\s+/', $_REQUEST['node_hover'], -1, PREG_SPLIT_NO_EMPTY);
-		$map->nodes[$new_node_name]->overliburl[IN] = $urls;
-		$map->nodes[$new_node_name]->overliburl[OUT] = $urls;
-		
-		$map->nodes[$new_node_name]->x = intval($_REQUEST['node_x']);
-		$map->nodes[$new_node_name]->y = intval($_REQUEST['node_y']);
+        if(isset($map->nodes[$node_name])) {
+            $map->nodes[$node_name]->config_override = $node_config;
 
-		if($_REQUEST['node_iconfilename'] == '--NONE--')
-		{
-		    $map->nodes[$new_node_name]->iconfile='';   
-		}
-		else
-		{
-		    // AICONs mess this up, because they're not fully supported by the editor, but it can still break them
-		    if($_REQUEST['node_iconfilename'] != '--AICON--') {
-			    $iconfile = stripslashes($_REQUEST['node_iconfilename']);			    
-			    $map->nodes[$new_node_name]->iconfile = $iconfile;
-		    }
-		}
+            $map->WriteConfig($mapfile);
+            // now clear and reload the map object, because the in-memory one is out of sync
+            // - we don't know what changes the user made here, so we just have to reload.
+            unset($map);
+            $map = new WeatherMap;
+            $map->context = 'editor';
+            $map->ReadConfig($mapfile);
+        }
+        break;
 
-		$map->WriteConfig($mapfile);
-		break;
+    case "set_node_properties":
+        $map->ReadConfig($mapfile);
 
-	case "set_link_properties":
-		$map->ReadConfig($mapfile);
-		$link_name = $_REQUEST['link_name'];
+        $node_name = $_REQUEST['node_name'];
+        $new_node_name = $_REQUEST['node_new_name'];
 
-		if(strpos($link_name," ") === false) {
-		    $map->links[$link_name]->width = floatval($_REQUEST['link_width']);
-		    $map->links[$link_name]->infourl[IN] = wm_editor_sanitize_string($_REQUEST['link_infourl']);
-		    $map->links[$link_name]->infourl[OUT] = wm_editor_sanitize_string($_REQUEST['link_infourl']);
-		    $urls = preg_split('/\s+/', $_REQUEST['link_hover'], -1, PREG_SPLIT_NO_EMPTY);
-		    $map->links[$link_name]->overliburl[IN] = $urls;
-		    $map->links[$link_name]->overliburl[OUT] = $urls;
-		    
-		    $map->links[$link_name]->comments[IN] =  wm_editor_sanitize_string($_REQUEST['link_commentin']);
-		    $map->links[$link_name]->comments[OUT] = wm_editor_sanitize_string($_REQUEST['link_commentout']);
-		    $map->links[$link_name]->commentoffset_in =  intval($_REQUEST['link_commentposin']);
-		    $map->links[$link_name]->commentoffset_out = intval($_REQUEST['link_commentposout']); 
+        // first check if there's a rename...
+        if($node_name != $new_node_name && strpos($new_node_name," ") === false)
+        {
+            if(!isset($map->nodes[$new_node_name]))
+            {
+                // we need to rename the node first.
+                $newnode = $map->nodes[$node_name];
+                $newnode->name = $new_node_name;
+                $map->nodes[$new_node_name] = $newnode;
+                unset($map->nodes[$node_name]);
 
-		    // $map->links[$link_name]->target = $_REQUEST['link_target'];
+                // find the references elsewhere to the old node name.
+                // First, relatively-positioned NODEs
+                foreach ($map->nodes as $node)
+                {
+                    if($node->relative_to == $node_name)
+                    {
+                        $map->nodes[$node->name]->relative_to = $new_node_name;
+                    }
+                }
+                // Next, LINKs that use this NODE as an end.
+                foreach ($map->links as $link)
+                {
+                if(isset($link->a))
+                {
+                    if($link->a->name == $node_name)
+                    {
+                        $map->links[$link->name]->a = $newnode;
+                    }
+                    if($link->b->name == $node_name)
+                    {
+                        $map->links[$link->name]->b = $newnode;
+                    }
+                    // while we're here, VIAs can also be relative to a NODE,
+                    // so check if any of those need to change
+                    if( (count($link->vialist)>0) )
+                    {
+                    $vv=0;
+                    foreach($link->vialist as $v)
+                    {
+                        if(isset($v[2]) && $v[2] == $node_name)
+                        {
+                        // die PHP4, die!
+                        $map->links[$link->name]->vialist[$vv][2] = $new_node_name;
+                        }
+                        $vv++;
+                    }
+                    }
+                }
+                }
+            }
+            else
+            {
+            // silently ignore attempts to rename a node to an existing name
+            $new_node_name = $node_name;
+            }
+        }
 
-		    $targets = preg_split('/\s+/',$_REQUEST['link_target'],-1,PREG_SPLIT_NO_EMPTY); 
-		    $new_target_list = array();
+        // by this point, and renaming has been done, and new_node_name will always be the right name
+        $map->nodes[$new_node_name]->label = wm_editor_sanitize_string($_REQUEST['node_label']);
+        $map->nodes[$new_node_name]->infourl[IN] = wm_editor_sanitize_string($_REQUEST['node_infourl']);
 
-		    foreach ($targets as $target)
-		    {
-			// we store the original TARGET string, and line number, along with the breakdown, to make nicer error messages later
-			$newtarget = array($target,'traffic_in','traffic_out',0,$target);
+        $urls = preg_split('/\s+/', $_REQUEST['node_hover'], -1, PREG_SPLIT_NO_EMPTY);
+        $map->nodes[$new_node_name]->overliburl[IN] = $urls;
+        $map->nodes[$new_node_name]->overliburl[OUT] = $urls;
 
-			// if it's an RRD file, then allow for the user to specify the
-			// DSs to be used. The default is traffic_in, traffic_out, which is
-			// OK for Cacti (most of the time), but if you have other RRDs...
-			if(preg_match("/(.*\.rrd):([\-a-zA-Z0-9_]+):([\-a-zA-Z0-9_]+)$/i",$target,$matches))
-			{
-				$newtarget[0] = $matches[1];
-				$newtarget[1] = $matches[2];
-				$newtarget[2] = $matches[3];
-			}
-			// now we've (maybe) messed with it, we'll store the array of target specs
-			$new_target_list[] = $newtarget;
-		    }
-		    $map->links[$link_name]->targets = $new_target_list;
+        $map->nodes[$new_node_name]->x = intval($_REQUEST['node_x']);
+        $map->nodes[$new_node_name]->y = intval($_REQUEST['node_y']);
 
-		    $bwin = $_REQUEST['link_bandwidth_in'];
-		    $bwout = $_REQUEST['link_bandwidth_out'];
+        if($_REQUEST['node_iconfilename'] == '--NONE--')
+        {
+            $map->nodes[$new_node_name]->iconfile='';
+        }
+        else
+        {
+            // AICONs mess this up, because they're not fully supported by the editor, but it can still break them
+            if($_REQUEST['node_iconfilename'] != '--AICON--') {
+                $iconfile = stripslashes($_REQUEST['node_iconfilename']);
+                $map->nodes[$new_node_name]->iconfile = $iconfile;
+            }
+        }
 
-		    if(isset($_REQUEST['link_bandwidth_out_cb']) && $_REQUEST['link_bandwidth_out_cb'] == 'symmetric')
-		    {
-			    $bwout = $bwin;
-		    }
+        $map->WriteConfig($mapfile);
+        break;
 
-		    if(wm_editor_validate_bandwidth($bwin)) {
-			$map->links[$link_name]->max_bandwidth_in_cfg = $bwin;
-			$map->links[$link_name]->max_bandwidth_in = unformat_number($bwin, $map->kilo);
-		    
-		    }
-		    if(wm_editor_validate_bandwidth($bwout)) {
-			$map->links[$link_name]->max_bandwidth_out_cfg = $bwout;		    
-			$map->links[$link_name]->max_bandwidth_out = unformat_number($bwout, $map->kilo);
-		    }
-		    // $map->links[$link_name]->SetBandwidth($bwin,$bwout);
-		    
-		    $map->WriteConfig($mapfile);
-		}
-		break;
+    case "set_link_properties":
+        $map->ReadConfig($mapfile);
+        $link_name = $_REQUEST['link_name'];
 
-	case "set_map_properties":
-		$map->ReadConfig($mapfile);
+        if(strpos($link_name," ") === false) {
+            $map->links[$link_name]->width = floatval($_REQUEST['link_width']);
+            $map->links[$link_name]->infourl[IN] = wm_editor_sanitize_string($_REQUEST['link_infourl']);
+            $map->links[$link_name]->infourl[OUT] = wm_editor_sanitize_string($_REQUEST['link_infourl']);
+            $urls = preg_split('/\s+/', $_REQUEST['link_hover'], -1, PREG_SPLIT_NO_EMPTY);
+            $map->links[$link_name]->overliburl[IN] = $urls;
+            $map->links[$link_name]->overliburl[OUT] = $urls;
 
-		$map->title = wm_editor_sanitize_string($_REQUEST['map_title']);
-		$map->keytext['DEFAULT'] = wm_editor_sanitize_string($_REQUEST['map_legend']);
-		$map->stamptext = wm_editor_sanitize_string($_REQUEST['map_stamp']);
+            $map->links[$link_name]->comments[IN] =  wm_editor_sanitize_string($_REQUEST['link_commentin']);
+            $map->links[$link_name]->comments[OUT] = wm_editor_sanitize_string($_REQUEST['link_commentout']);
+            $map->links[$link_name]->commentoffset_in =  intval($_REQUEST['link_commentposin']);
+            $map->links[$link_name]->commentoffset_out = intval($_REQUEST['link_commentposout']);
 
-		$map->htmloutputfile = wm_editor_sanitize_file($_REQUEST['map_htmlfile'],array("html") );
-		$map->imageoutputfile = wm_editor_sanitize_file($_REQUEST['map_pngfile'],array("png","jpg","gif","jpeg"));
+            // $map->links[$link_name]->target = $_REQUEST['link_target'];
 
-		$map->width = intval($_REQUEST['map_width']);
-		$map->height = intval($_REQUEST['map_height']);
+            $targets = preg_split('/\s+/',$_REQUEST['link_target'],-1,PREG_SPLIT_NO_EMPTY);
+            $new_target_list = array();
 
-		// XXX sanitise this a bit
-		if($_REQUEST['map_bgfile'] == '--NONE--')
-		{
-		    $map->background='';    
-		}
-		else
-		{		    
-		    $map->background = wm_editor_sanitize_file(stripslashes($_REQUEST['map_bgfile']),array("png","jpg","gif","jpeg") );
-		}
+            foreach ($targets as $target)
+            {
+            // we store the original TARGET string, and line number, along with the breakdown, to make nicer error messages later
+            $newtarget = array($target,'traffic_in','traffic_out',0,$target);
 
-		$inheritables = array(
-			array('link','width','map_linkdefaultwidth',"float"),
-		);
+            // if it's an RRD file, then allow for the user to specify the
+            // DSs to be used. The default is traffic_in, traffic_out, which is
+            // OK for Cacti (most of the time), but if you have other RRDs...
+            if(preg_match("/(.*\.rrd):([\-a-zA-Z0-9_]+):([\-a-zA-Z0-9_]+)$/i",$target,$matches))
+            {
+                $newtarget[0] = $matches[1];
+                $newtarget[1] = $matches[2];
+                $newtarget[2] = $matches[3];
+            }
+            // now we've (maybe) messed with it, we'll store the array of target specs
+            $new_target_list[] = $newtarget;
+            }
+            $map->links[$link_name]->targets = $new_target_list;
 
-		handle_inheritance($map, $inheritables);	
-		$map->links['DEFAULT']->width = intval($_REQUEST['map_linkdefaultwidth']);
-		$map->links['DEFAULT']->add_note("my_width", intval($_REQUEST['map_linkdefaultwidth']));
-                
-		$bwin = $_REQUEST['map_linkdefaultbwin'];
-		$bwout = $_REQUEST['map_linkdefaultbwout'];
-		
-		$bwin_old = $map->links['DEFAULT']->max_bandwidth_in_cfg;
-		$bwout_old = $map->links['DEFAULT']->max_bandwidth_out_cfg;
-		
-		if(! wm_editor_validate_bandwidth($bwin)) {
-		    $bwin = $bwin_old;
-		}
+            $bwin = $_REQUEST['link_bandwidth_in'];
+            $bwout = $_REQUEST['link_bandwidth_out'];
 
-		if(! wm_editor_validate_bandwidth($bwout)) {
-		    $bwout = $bwout_old;
-		}		
+            if(isset($_REQUEST['link_bandwidth_out_cb']) && $_REQUEST['link_bandwidth_out_cb'] == 'symmetric')
+            {
+                $bwout = $bwin;
+            }
 
-		if( ($bwin_old != $bwin) || ($bwout_old != $bwout) )
-		{
-			$map->links['DEFAULT']->max_bandwidth_in_cfg = $bwin;
-			$map->links['DEFAULT']->max_bandwidth_out_cfg = $bwout;
-			$map->links['DEFAULT']->max_bandwidth_in = unformat_number($bwin, $map->kilo);
+            if(wm_editor_validate_bandwidth($bwin)) {
+            $map->links[$link_name]->max_bandwidth_in_cfg = $bwin;
+            $map->links[$link_name]->max_bandwidth_in = unformat_number($bwin, $map->kilo);
+
+            }
+            if(wm_editor_validate_bandwidth($bwout)) {
+            $map->links[$link_name]->max_bandwidth_out_cfg = $bwout;
+            $map->links[$link_name]->max_bandwidth_out = unformat_number($bwout, $map->kilo);
+            }
+            // $map->links[$link_name]->SetBandwidth($bwin,$bwout);
+
+            $map->WriteConfig($mapfile);
+        }
+        break;
+
+    case "set_map_properties":
+        $map->ReadConfig($mapfile);
+
+        $map->title = wm_editor_sanitize_string($_REQUEST['map_title']);
+        $map->keytext['DEFAULT'] = wm_editor_sanitize_string($_REQUEST['map_legend']);
+        $map->stamptext = wm_editor_sanitize_string($_REQUEST['map_stamp']);
+
+        $map->htmloutputfile = wm_editor_sanitize_file($_REQUEST['map_htmlfile'],array("html") );
+        $map->imageoutputfile = wm_editor_sanitize_file($_REQUEST['map_pngfile'],array("png","jpg","gif","jpeg"));
+
+        $map->width = intval($_REQUEST['map_width']);
+        $map->height = intval($_REQUEST['map_height']);
+
+        // XXX sanitise this a bit
+        if($_REQUEST['map_bgfile'] == '--NONE--')
+        {
+            $map->background='';
+        }
+        else
+        {
+            $map->background = wm_editor_sanitize_file(stripslashes($_REQUEST['map_bgfile']),array("png","jpg","gif","jpeg") );
+        }
+
+        $inheritables = array(
+            array('link','width','map_linkdefaultwidth',"float"),
+        );
+
+        handle_inheritance($map, $inheritables);
+        $map->links['DEFAULT']->width = intval($_REQUEST['map_linkdefaultwidth']);
+        $map->links['DEFAULT']->add_note("my_width", intval($_REQUEST['map_linkdefaultwidth']));
+
+        $bwin = $_REQUEST['map_linkdefaultbwin'];
+        $bwout = $_REQUEST['map_linkdefaultbwout'];
+
+        $bwin_old = $map->links['DEFAULT']->max_bandwidth_in_cfg;
+        $bwout_old = $map->links['DEFAULT']->max_bandwidth_out_cfg;
+
+        if(! wm_editor_validate_bandwidth($bwin)) {
+            $bwin = $bwin_old;
+        }
+
+        if(! wm_editor_validate_bandwidth($bwout)) {
+            $bwout = $bwout_old;
+        }
+
+        if( ($bwin_old != $bwin) || ($bwout_old != $bwout) )
+        {
+            $map->links['DEFAULT']->max_bandwidth_in_cfg = $bwin;
+            $map->links['DEFAULT']->max_bandwidth_out_cfg = $bwout;
+            $map->links['DEFAULT']->max_bandwidth_in = unformat_number($bwin, $map->kilo);
                         $map->links['DEFAULT']->max_bandwidth_out = unformat_number($bwout, $map->kilo);
-			
-			// $map->defaultlink->SetBandwidth($bwin,$bwout);
-			foreach ($map->links as $link)
-			{
-			    if( ($link->max_bandwidth_in_cfg == $bwin_old) || ($link->max_bandwidth_out_cfg == $bwout_old) )
-			    {
-	    //			$link->SetBandwidth($bwin,$bwout);
-				    $link_name = $link->name;
-				    $map->links[$link_name]->max_bandwidth_in_cfg = $bwin;
-				    $map->links[$link_name]->max_bandwidth_out_cfg = $bwout;
-				    $map->links[$link_name]->max_bandwidth_in = unformat_number($bwin, $map->kilo);
-				    $map->links[$link_name]->max_bandwidth_out = unformat_number($bwout, $map->kilo);
-			    }
-			}
-		}
 
-		$map->WriteConfig($mapfile);
-		break; 
+            // $map->defaultlink->SetBandwidth($bwin,$bwout);
+            foreach ($map->links as $link)
+            {
+                if( ($link->max_bandwidth_in_cfg == $bwin_old) || ($link->max_bandwidth_out_cfg == $bwout_old) )
+                {
+        //            $link->SetBandwidth($bwin,$bwout);
+                    $link_name = $link->name;
+                    $map->links[$link_name]->max_bandwidth_in_cfg = $bwin;
+                    $map->links[$link_name]->max_bandwidth_out_cfg = $bwout;
+                    $map->links[$link_name]->max_bandwidth_in = unformat_number($bwin, $map->kilo);
+                    $map->links[$link_name]->max_bandwidth_out = unformat_number($bwout, $map->kilo);
+                }
+            }
+        }
 
-	case 'set_map_style':
-		$map->ReadConfig($mapfile);
+        $map->WriteConfig($mapfile);
+        break;
 
-		if(wm_editor_validate_one_of($_REQUEST['mapstyle_htmlstyle'],array('static','overlib'),false)) {
-		    $map->htmlstyle = strtolower($_REQUEST['mapstyle_htmlstyle']); 		    
-		}
+    case 'set_map_style':
+        $map->ReadConfig($mapfile);
 
-		$map->keyfont = intval($_REQUEST['mapstyle_legendfont']);
+        if(wm_editor_validate_one_of($_REQUEST['mapstyle_htmlstyle'],array('static','overlib'),false)) {
+            $map->htmlstyle = strtolower($_REQUEST['mapstyle_htmlstyle']);
+        }
 
-		$inheritables = array(
-			array('link','labelstyle','mapstyle_linklabels',""),
-			array('link','bwfont','mapstyle_linkfont',"int"),
-			array('link','arrowstyle','mapstyle_arrowstyle',""),
-			array('node','labelfont','mapstyle_nodefont',"int")
-			);
+        $map->keyfont = intval($_REQUEST['mapstyle_legendfont']);
 
-		handle_inheritance($map, $inheritables);
-		
-		$map->WriteConfig($mapfile);
-		break;
+        $inheritables = array(
+            array('link','labelstyle','mapstyle_linklabels',""),
+            array('link','bwfont','mapstyle_linkfont',"int"),
+            array('link','arrowstyle','mapstyle_arrowstyle',""),
+            array('node','labelfont','mapstyle_nodefont',"int")
+            );
 
-	case "add_link":
-		$map->ReadConfig($mapfile);
+        handle_inheritance($map, $inheritables);
 
-		$param2 = $_REQUEST['param'];
-		# $param2 = substr($param2,0,-2);
-		$newaction = 'add_link2';
+        $map->WriteConfig($mapfile);
+        break;
+
+    case "add_link":
+        $map->ReadConfig($mapfile);
+
+        $param2 = $_REQUEST['param'];
+        # $param2 = substr($param2,0,-2);
+        $newaction = 'add_link2';
               #  print $newaction;
 		$selected = 'NODE:'.$param2;
                 
@@ -937,13 +937,13 @@ else
 <head>
 <style type="text/css">
 <?php
-		// if the cacti config was included properly, then 
-		// this will be non-empty, and we can unhide the cacti links in the Link Properties box
-		if( ! isset($config['cacti_version']) )
-		{
-			echo "    .cactilink { display: none; }\n";
-			echo "    .cactinode { display: none; }\n";
-		}
+        // if the cacti config was included properly, then
+        // this will be non-empty, and we can unhide the cacti links in the Link Properties box
+        if( ! isset($config['cacti_version']) )
+        {
+            echo "    .cactilink { display: none; }\n";
+            echo "    .cactinode { display: none; }\n";
+        }
 ?>
 	</style>
   <link rel="stylesheet" type="text/css" media="screen" href="editor-resources/oldeditor.css" />
@@ -959,37 +959,37 @@ else
 	<?php print $map->asJS() ?>
 <?php
 
-	// append any images used in the map that aren't in the images folder
-	foreach ($map->used_images as $im)
-	{
-		if(! in_array($im,$imlist))
-		{
-			$imlist[]=$im;
-		}
-	}
+    // append any images used in the map that aren't in the images folder
+    foreach ($map->used_images as $im)
+    {
+        if(! in_array($im,$imlist))
+        {
+            $imlist[]=$im;
+        }
+    }
 
-	sort($imlist);
+    sort($imlist);
 ?>
-	</script>
+    </script>
   <title>PHP Weathermap Editor <?php echo $WEATHERMAP_VERSION; ?></title>
 </head>
 
 <body id="mainview">
   <div id="toolbar">
-	<ul>
+    <ul>
           <li class="tb_active" id="tb_newfile">Change<br />File</li>
-	  <li class="tb_active" id="tb_addnode">Add<br />Node</li>
-	  <li class="tb_active" id="tb_addlink">Add<br />Link</li>
-	  <li class="tb_active" id="tb_poslegend">Position<br />Legend</li>
-	  <li class="tb_active" id="tb_postime">Position<br />Timestamp</li>
-	  <li class="tb_active" id="tb_mapprops">Map<br />Properties</li>
-	  <li class="tb_active" id="tb_mapstyle">Map<br />Style</li>
-	  <li class="tb_active" id="tb_colours">Manage<br />Colors</li>
-	  <li class="tb_active" id="tb_manageimages">Manage<br />Images</li>
-	  <li class="tb_active" id="tb_prefs">Editor<br />Settings</li>
+      <li class="tb_active" id="tb_addnode">Add<br />Node</li>
+      <li class="tb_active" id="tb_addlink">Add<br />Link</li>
+      <li class="tb_active" id="tb_poslegend">Position<br />Legend</li>
+      <li class="tb_active" id="tb_postime">Position<br />Timestamp</li>
+      <li class="tb_active" id="tb_mapprops">Map<br />Properties</li>
+      <li class="tb_active" id="tb_mapstyle">Map<br />Style</li>
+      <li class="tb_active" id="tb_colours">Manage<br />Colors</li>
+      <li class="tb_active" id="tb_manageimages">Manage<br />Images</li>
+      <li class="tb_active" id="tb_prefs">Editor<br />Settings</li>
           <li class="tb_coords" id="tb_coords">Position<br />---, ---</li>
-	  <li class="tb_help"><span id="tb_help">or click a Node or Link to edit it's properties</span></li>
-	</ul>
+      <li class="tb_help"><span id="tb_help">or click a Node or Link to edit it's properties</span></li>
+    </ul>
   </div>
   <form action="<?php echo $editor_name ?>" method="post" name="frmMain">
 	<div align="center" id="mainarea">
@@ -1028,136 +1028,136 @@ else
 	#print $map->imap->subHTML("LINK:");
                 
 ?>
-	</div><!-- Node Properties -->
+    </div><!-- Node Properties -->
 
-	<div id="dlgNodeProperties" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Node Properties
-		<input size="6" name="node_name" type="hidden" />
-		<ul>
-		  <li><a id="tb_node_submit" class="wm_submit" title="Submit any changes made">Submit</a></li>
-		  <li><a id="tb_node_cancel" class="wm_cancel" title="Cancel any changes">Cancel</a></li>
-		</ul>
-	  </div>
+    <div id="dlgNodeProperties" class="dlgProperties">
+      <div class="dlgTitlebar">
+        Node Properties
+        <input size="6" name="node_name" type="hidden" />
+        <ul>
+          <li><a id="tb_node_submit" class="wm_submit" title="Submit any changes made">Submit</a></li>
+          <li><a id="tb_node_cancel" class="wm_cancel" title="Cancel any changes">Cancel</a></li>
+        </ul>
+      </div>
 
-	  <div class="dlgBody">
-		<table>
-		<tr>
-			<th>Position</th>
-			<td><input id="node_x" name="node_x" size=4 type="text" />,<input id="node_y" name="node_y" size=4 type="text" /></td>
-		</tr>
-		  <tr>
-			<th>Internal Name</th>
-			<td><input id="node_new_name" name="node_new_name" type="text" /></td>
-		  </tr>
-		  <tr>
-			<th>Label</th>
-			<td><input id="node_label" name="node_label" type="text" /></td>
-		  </tr>
-		  <tr>
-			<th>Info URL</th>
-			<td><input id="node_infourl" name="node_infourl" type="text" /></td>
-		  </tr>
-		  <tr>
-			<th>'Hover' Graph URL</th>
-			<td><input id="node_hover" name="node_hover" type="text" />
-			<span class="cactinode"><a id="node_cactipick">[Pick from Cacti]</a></span></td>
-		  </tr>
-		  <tr>
-			<th>Icon Filename</th>
-			<td><select id="node_iconfilename" name="node_iconfilename">
+      <div class="dlgBody">
+        <table>
+        <tr>
+            <th>Position</th>
+            <td><input id="node_x" name="node_x" size=4 type="text" />,<input id="node_y" name="node_y" size=4 type="text" /></td>
+        </tr>
+          <tr>
+            <th>Internal Name</th>
+            <td><input id="node_new_name" name="node_new_name" type="text" /></td>
+          </tr>
+          <tr>
+            <th>Label</th>
+            <td><input id="node_label" name="node_label" type="text" /></td>
+          </tr>
+          <tr>
+            <th>Info URL</th>
+            <td><input id="node_infourl" name="node_infourl" type="text" /></td>
+          </tr>
+          <tr>
+            <th>'Hover' Graph URL</th>
+            <td><input id="node_hover" name="node_hover" type="text" />
+            <span class="cactinode"><a id="node_cactipick">[Pick from Cacti]</a></span></td>
+          </tr>
+          <tr>
+            <th>Icon Filename</th>
+            <td><select id="node_iconfilename" name="node_iconfilename">
 
 <?php
-	if(count($imlist)==0)
-	{
-		print '<option value="--NONE--">(no images are available)</option>';
-	}
-	else
-	{
-		print '<option value="--NONE--">--NO ICON--</option>';
-		print '<option value="--AICON--">--ARTIFICIAL ICON--</option>';
-		foreach ($imlist as $im)
-		{
-			print "<option ";
-			print "value=\"".htmlspecialchars($im)."\">".htmlspecialchars($im)."</option>\n";
-		}
-	}
+    if(count($imlist)==0)
+    {
+        print '<option value="--NONE--">(no images are available)</option>';
+    }
+    else
+    {
+        print '<option value="--NONE--">--NO ICON--</option>';
+        print '<option value="--AICON--">--ARTIFICIAL ICON--</option>';
+        foreach ($imlist as $im)
+        {
+            print "<option ";
+            print "value=\"".htmlspecialchars($im)."\">".htmlspecialchars($im)."</option>\n";
+        }
+    }
 ?>
-		</select></td>
-		  </tr>
-		  <tr>
-			<th></th>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<th></th>
-			<td><a id="node_move" class="dlgTitlebar">Move</a><a class="dlgTitlebar" id="node_delete">Delete</a><a class="dlgTitlebar" id="node_clone">Clone</a><a class="dlgTitlebar" id="node_edit">Edit</a></td>
-		  </tr>
-		</table>
-	  </div>
+        </select></td>
+          </tr>
+          <tr>
+            <th></th>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th></th>
+            <td><a id="node_move" class="dlgTitlebar">Move</a><a class="dlgTitlebar" id="node_delete">Delete</a><a class="dlgTitlebar" id="node_clone">Clone</a><a class="dlgTitlebar" id="node_edit">Edit</a></td>
+          </tr>
+        </table>
+      </div>
 
-	  <div class="dlgHelp" id="node_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- Node Properties -->
-
-
+      <div class="dlgHelp" id="node_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- Node Properties -->
 
 
-	<!-- Link Properties -->
 
-	<div id="dlgLinkProperties" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Link Properties
 
-		<ul>
-		  <li><a title="Submit any changes made"  class="wm_submit" id="tb_link_submit">Submit</a></li>
-		  <li><a title="Cancel any changes" class="wm_cancel" id="tb_link_cancel">Cancel</a></li>
-		</ul>
-	  </div>
+    <!-- Link Properties -->
 
-	  <div class="dlgBody">
-		<div class="comment">
-		  Link from '<span id="link_nodename1">%NODE1%</span>' to '<span id="link_nodename2">%NODE2%</span>'
-		</div>
+    <div id="dlgLinkProperties" class="dlgProperties">
+      <div class="dlgTitlebar">
+        Link Properties
 
-		<input size="6" name="link_name" type="hidden" />
+        <ul>
+          <li><a title="Submit any changes made"  class="wm_submit" id="tb_link_submit">Submit</a></li>
+          <li><a title="Cancel any changes" class="wm_cancel" id="tb_link_cancel">Cancel</a></li>
+        </ul>
+      </div>
 
-		  <table width="100%">
-			<tr>
-			  <th>Maximum Bandwidth<br />
-			  Into '<span id="link_nodename1a">%NODE1%</span>'</th>
-			  <td><input size="8" id="link_bandwidth_in" name="link_bandwidth_in" type=
-			  "text" /> bits/sec</td>
-			</tr>
-			<tr>
-			  <th>Maximum Bandwidth<br />
-			  Out of '<span id="link_nodename1b">%NODE1%</span>'</th>
-			  <td><input type="checkbox" id="link_bandwidth_out_cb" name=
-			  "link_bandwidth_out_cb" value="symmetric" />Same As
-			  'In' or <input id="link_bandwidth_out" name="link_bandwidth_out"
-			  size="8" type="text" /> bits/sec</td>
-			</tr>
-			<tr>
-			  <th>Data Source</th>
-			  <td><input id="link_target" name="link_target" type="text" /> <span class="cactilink"><a id="link_cactipick">[Pick
-			  from Cacti]</a></span></td>
-			</tr>
-			<tr>
-			  <th>Link Width</th>
-			  <td><input id="link_width" name="link_width" size="3" type="text" />
-			  pixels</td>
-			</tr>
-			<tr>
-			  <th>Info URL</th>
-			  <td><input id="link_infourl" size="30" name="link_infourl" type="text" /></td>
-			</tr>
-			<tr>
-			  <th>'Hover' Graph URL</th>
-			  <td><input id="link_hover"  size="30" name="link_hover" type="text" /></td>
-			</tr>
+      <div class="dlgBody">
+        <div class="comment">
+          Link from '<span id="link_nodename1">%NODE1%</span>' to '<span id="link_nodename2">%NODE2%</span>'
+        </div>
+
+        <input size="6" name="link_name" type="hidden" />
+
+          <table width="100%">
+            <tr>
+              <th>Maximum Bandwidth<br />
+              Into '<span id="link_nodename1a">%NODE1%</span>'</th>
+              <td><input size="8" id="link_bandwidth_in" name="link_bandwidth_in" type=
+              "text" /> bits/sec</td>
+            </tr>
+            <tr>
+              <th>Maximum Bandwidth<br />
+              Out of '<span id="link_nodename1b">%NODE1%</span>'</th>
+              <td><input type="checkbox" id="link_bandwidth_out_cb" name=
+              "link_bandwidth_out_cb" value="symmetric" />Same As
+              'In' or <input id="link_bandwidth_out" name="link_bandwidth_out"
+              size="8" type="text" /> bits/sec</td>
+            </tr>
+            <tr>
+              <th>Data Source</th>
+              <td><input id="link_target" name="link_target" type="text" /> <span class="cactilink"><a id="link_cactipick">[Pick
+              from Cacti]</a></span></td>
+            </tr>
+            <tr>
+              <th>Link Width</th>
+              <td><input id="link_width" name="link_width" size="3" type="text" />
+              pixels</td>
+            </tr>
+            <tr>
+              <th>Info URL</th>
+              <td><input id="link_infourl" size="30" name="link_infourl" type="text" /></td>
+            </tr>
+            <tr>
+              <th>'Hover' Graph URL</th>
+              <td><input id="link_hover"  size="30" name="link_hover" type="text" /></td>
+            </tr>
 
 
                         <tr>
@@ -1197,304 +1197,304 @@ else
 					  class="dlgTitlebar" id="link_tidy">Tidy</a><a
 							class="dlgTitlebar" id="link_via">Via</a> 
                         </td>
-			</tr>
-		  </table>
-	  </div>
+            </tr>
+          </table>
+      </div>
 
-	  <div class="dlgHelp" id="link_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- Link Properties -->
+      <div class="dlgHelp" id="link_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- Link Properties -->
 
-	<!-- Map Properties -->
+    <!-- Map Properties -->
 
-	<div id="dlgMapProperties" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Map Properties
+    <div id="dlgMapProperties" class="dlgProperties">
+      <div class="dlgTitlebar">
+        Map Properties
 
-		<ul>
-		  <li><a title="Submit any changes made"  class="wm_submit" id="tb_map_submit">Submit</a></li>
-		  <li><a title="Cancel any changes" class="wm_cancel" id="tb_map_cancel">Cancel</a></li>
-		</ul>
-	  </div>
+        <ul>
+          <li><a title="Submit any changes made"  class="wm_submit" id="tb_map_submit">Submit</a></li>
+          <li><a title="Cancel any changes" class="wm_cancel" id="tb_map_cancel">Cancel</a></li>
+        </ul>
+      </div>
 
-	  <div class="dlgBody">
-		<table>
-		  <tr>
-			<th>Map Title</th>
-			<td><input id="map_title" name="map_title" size="25" type="text" value="<?php echo  htmlspecialchars($map->title) ?>"/></td>
-		  </tr>
-		<tr>
-			<th>Legend Text</th>
-			<td><input name="map_legend" size="25" type="text" value="<?php echo  htmlspecialchars($map->keytext['DEFAULT']) ?>" /></td>
-		  </tr>
-		<tr>
-			<th>Timestamp Text</th>
-			<td><input name="map_stamp" size="25" type="text" value="<?php echo  htmlspecialchars($map->stamptext) ?>" /></td>
-		  </tr>
+      <div class="dlgBody">
+        <table>
+          <tr>
+            <th>Map Title</th>
+            <td><input id="map_title" name="map_title" size="25" type="text" value="<?php echo  htmlspecialchars($map->title) ?>"/></td>
+          </tr>
+        <tr>
+            <th>Legend Text</th>
+            <td><input name="map_legend" size="25" type="text" value="<?php echo  htmlspecialchars($map->keytext['DEFAULT']) ?>" /></td>
+          </tr>
+        <tr>
+            <th>Timestamp Text</th>
+            <td><input name="map_stamp" size="25" type="text" value="<?php echo  htmlspecialchars($map->stamptext) ?>" /></td>
+          </tr>
 
-		<tr>
-			<th>Default Link Width</th>
-			<td><input name="map_linkdefaultwidth" size="6" type="text" value="<?php echo  htmlspecialchars($map->links['DEFAULT']->width) ?>" /> pixels</td>
-		  </tr>
+        <tr>
+            <th>Default Link Width</th>
+            <td><input name="map_linkdefaultwidth" size="6" type="text" value="<?php echo  htmlspecialchars($map->links['DEFAULT']->width) ?>" /> pixels</td>
+          </tr>
 
-		<tr>
-			<th>Default Link Bandwidth</th>
-			<td><input name="map_linkdefaultbwin" size="6" type="text" value="<?php echo  htmlspecialchars($map->links['DEFAULT']->max_bandwidth_in_cfg) ?>" /> bit/sec in, <input name="map_linkdefaultbwout" size="6" type="text" value="<?php echo  htmlspecialchars($map->links['DEFAULT']->max_bandwidth_out_cfg) ?>" /> bit/sec out</td>
-		  </tr>
+        <tr>
+            <th>Default Link Bandwidth</th>
+            <td><input name="map_linkdefaultbwin" size="6" type="text" value="<?php echo  htmlspecialchars($map->links['DEFAULT']->max_bandwidth_in_cfg) ?>" /> bit/sec in, <input name="map_linkdefaultbwout" size="6" type="text" value="<?php echo  htmlspecialchars($map->links['DEFAULT']->max_bandwidth_out_cfg) ?>" /> bit/sec out</td>
+          </tr>
 
 
-		  <tr>
-			<th>Map Size</th>
-			<td><input name="map_width" size="5" type=
-			"text"  value="<?php echo  htmlspecialchars($map->width) ?>" /> x <input name="map_height" size="5" type=
-			"text"  value="<?php echo  htmlspecialchars($map->height) ?>" /> pixels</td>
-		  </tr>
-		   <tr>
-			<th>Output Image Filename</th>
-			<td><input name="map_pngfile" type="text"  value="<?php echo  htmlspecialchars($map->imageoutputfile) ?>" /></td>
-		  </tr>
-		  <tr>
-			<th>Output HTML Filename</th>
-			<td><input name="map_htmlfile" type="text" value="<?php echo  htmlspecialchars($map->htmloutputfile) ?>" /></td>
-		  </tr>
-		  <tr>
-			<th>Background Image Filename</th>
-			<td><select name="map_bgfile">
+          <tr>
+            <th>Map Size</th>
+            <td><input name="map_width" size="5" type=
+            "text"  value="<?php echo  htmlspecialchars($map->width) ?>" /> x <input name="map_height" size="5" type=
+            "text"  value="<?php echo  htmlspecialchars($map->height) ?>" /> pixels</td>
+          </tr>
+           <tr>
+            <th>Output Image Filename</th>
+            <td><input name="map_pngfile" type="text"  value="<?php echo  htmlspecialchars($map->imageoutputfile) ?>" /></td>
+          </tr>
+          <tr>
+            <th>Output HTML Filename</th>
+            <td><input name="map_htmlfile" type="text" value="<?php echo  htmlspecialchars($map->htmloutputfile) ?>" /></td>
+          </tr>
+          <tr>
+            <th>Background Image Filename</th>
+            <td><select name="map_bgfile">
 
 <?php
-	if(count($imlist)==0)
-	{
-		print '<option value="--NONE--">(no images are available)</option>';
-	}
-	else
-	{
-		print '<option value="--NONE--">--NONE--</option>';
-		foreach ($imlist as $im)
-		{
-			print "<option ";		
-    			if($map->background == $im) print " selected ";
-			print "value=\"".htmlspecialchars($im)."\">".htmlspecialchars($im)."</option>\n";
-		}
-	}
+    if(count($imlist)==0)
+    {
+        print '<option value="--NONE--">(no images are available)</option>';
+    }
+    else
+    {
+        print '<option value="--NONE--">--NONE--</option>';
+        foreach ($imlist as $im)
+        {
+            print "<option ";
+                if($map->background == $im) print " selected ";
+            print "value=\"".htmlspecialchars($im)."\">".htmlspecialchars($im)."</option>\n";
+        }
+    }
 ?>
-			</select></td>
-		  </tr>
-		
-		</table>
-	  </div>
+            </select></td>
+          </tr>
 
-	  <div class="dlgHelp" id="map_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- Map Properties -->
+        </table>
+      </div>
 
-	<!-- Map Style -->
-	<div id="dlgMapStyle" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Map Style
+      <div class="dlgHelp" id="map_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- Map Properties -->
 
-		<ul>
-		  <li><a title="Submit any changes made" id="tb_mapstyle_submit" class="wm_submit" >Submit</a></li>
-		  <li><a title="Cancel any changes" class="wm_cancel" id="tb_mapstyle_cancel">Cancel</a></li>
-		</ul>
-	  </div>
+    <!-- Map Style -->
+    <div id="dlgMapStyle" class="dlgProperties">
+      <div class="dlgTitlebar">
+        Map Style
 
-	  <div class="dlgBody">
-		<table>
-		  <tr>
-			<th>Link Labels</th>
-			<td><select id="mapstyle_linklabels" name="mapstyle_linklabels">
-			  <option <?php echo ($map->links['DEFAULT']->labelstyle=='bits' ? 'selected' : '') ?> value="bits">Bits/sec</option>
-			  <option <?php echo ($map->links['DEFAULT']->labelstyle=='percent' ? 'selected' : '') ?> value="percent">Percentage</option>
-			  <option <?php echo ($map->links['DEFAULT']->labelstyle=='none' ? 'selected' : '') ?> value="none">None</option>
-			</select></td>
-		  </tr>
-		  <tr>
-			<th>HTML Style</th>
-			<td><select name="mapstyle_htmlstyle">
-			  <option <?php echo ($map->htmlstyle=='overlib' ? 'selected' : '') ?> value="overlib">Overlib (DHTML)</option>
-			  <option <?php echo ($map->htmlstyle=='static' ? 'selected' : '') ?> value="static">Static HTML</option>
-			</select></td>
-		  </tr>
-		  <tr>
-			<th>Arrow Style</th>
-			<td><select name="mapstyle_arrowstyle">
-			  <option <?php echo ($map->links['DEFAULT']->arrowstyle=='classic' ? 'selected' : '') ?> value="classic">Classic</option>
-			  <option <?php echo ($map->links['DEFAULT']->arrowstyle=='compact' ? 'selected' : '') ?> value="compact">Compact</option>
-			</select></td>
-		  </tr>
-		  <tr>
-			<th>Node Font</th>
-			<td><?php echo get_fontlist($map,'mapstyle_nodefont',$map->nodes['DEFAULT']->labelfont); ?></td>
-		  </tr>
-		  <tr>
-			<th>Link Label Font</th>
-			<td><?php echo get_fontlist($map,'mapstyle_linkfont',$map->links['DEFAULT']->bwfont); ?></td>
-		  </tr>
-		  <tr>
-			<th>Legend Font</th>
-			<td><?php echo get_fontlist($map,'mapstyle_legendfont',$map->keyfont); ?></td>
-		  </tr>
-		  <tr>
-			<th>Font Samples:</th>
-			<td><div class="fontsamples" ><img alt="Sample of defined fonts" src="?action=font_samples&mapname=<?php echo  $mapname?>" /></div><br />(Drawn using your PHP install)</td>
-		  </tr>
-		</table>
-	  </div>
+        <ul>
+          <li><a title="Submit any changes made" id="tb_mapstyle_submit" class="wm_submit" >Submit</a></li>
+          <li><a title="Cancel any changes" class="wm_cancel" id="tb_mapstyle_cancel">Cancel</a></li>
+        </ul>
+      </div>
 
-	  <div class="dlgHelp" id="mapstyle_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- Map Style -->
+      <div class="dlgBody">
+        <table>
+          <tr>
+            <th>Link Labels</th>
+            <td><select id="mapstyle_linklabels" name="mapstyle_linklabels">
+              <option <?php echo ($map->links['DEFAULT']->labelstyle=='bits' ? 'selected' : '') ?> value="bits">Bits/sec</option>
+              <option <?php echo ($map->links['DEFAULT']->labelstyle=='percent' ? 'selected' : '') ?> value="percent">Percentage</option>
+              <option <?php echo ($map->links['DEFAULT']->labelstyle=='none' ? 'selected' : '') ?> value="none">None</option>
+            </select></td>
+          </tr>
+          <tr>
+            <th>HTML Style</th>
+            <td><select name="mapstyle_htmlstyle">
+              <option <?php echo ($map->htmlstyle=='overlib' ? 'selected' : '') ?> value="overlib">Overlib (DHTML)</option>
+              <option <?php echo ($map->htmlstyle=='static' ? 'selected' : '') ?> value="static">Static HTML</option>
+            </select></td>
+          </tr>
+          <tr>
+            <th>Arrow Style</th>
+            <td><select name="mapstyle_arrowstyle">
+              <option <?php echo ($map->links['DEFAULT']->arrowstyle=='classic' ? 'selected' : '') ?> value="classic">Classic</option>
+              <option <?php echo ($map->links['DEFAULT']->arrowstyle=='compact' ? 'selected' : '') ?> value="compact">Compact</option>
+            </select></td>
+          </tr>
+          <tr>
+            <th>Node Font</th>
+            <td><?php echo get_fontlist($map,'mapstyle_nodefont',$map->nodes['DEFAULT']->labelfont); ?></td>
+          </tr>
+          <tr>
+            <th>Link Label Font</th>
+            <td><?php echo get_fontlist($map,'mapstyle_linkfont',$map->links['DEFAULT']->bwfont); ?></td>
+          </tr>
+          <tr>
+            <th>Legend Font</th>
+            <td><?php echo get_fontlist($map,'mapstyle_legendfont',$map->keyfont); ?></td>
+          </tr>
+          <tr>
+            <th>Font Samples:</th>
+            <td><div class="fontsamples" ><img alt="Sample of defined fonts" src="?action=font_samples&mapname=<?php echo  $mapname?>" /></div><br />(Drawn using your PHP install)</td>
+          </tr>
+        </table>
+      </div>
 
-
-
-	<!-- Colours -->
-
-	<div id="dlgColours" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Manage Colors
-
-		<ul>
-		  <li><a title="Submit any changes made" id="tb_colours_submit"  class="wm_submit" >Submit</a></li>
-		  <li><a title="Cancel any changes" class="wm_cancel" id="tb_colours_cancel">Cancel</a></li>
-		</ul>
-	  </div>
-
-	  <div class="dlgBody">
-		Nothing in here works yet. The aim is to have a nice color picker somehow.
-		<table>
-		  <tr>
-			<th>Background Color</th>
-			<td></td>
-		  </tr>
-
-		  <tr>
-			<th>Link Outline Color</th>
-			<td></td>
-		  </tr>
-		<tr>
-		<th>Scale Colors</th>
-		<td>Some pleasant way to design the bandwidth color scale goes in here???</td>
-		</tr>
-
-		</table>
-	  </div>
-
-	  <div class="dlgHelp" id="colours_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- Colours -->
+      <div class="dlgHelp" id="mapstyle_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- Map Style -->
 
 
-	<!-- Images -->
 
-	<div id="dlgImages" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Manage Images
+    <!-- Colours -->
 
-		<ul>
-		  <li><a title="Submit any changes made" id="tb_images_submit"  class="wm_submit" >Submit</a></li>
-		  <li><a title="Cancel any changes" class="wm_cancel" id="tb_images_cancel">Cancel</a></li>
-		</ul>
-	  </div>
+    <div id="dlgColours" class="dlgProperties">
+      <div class="dlgTitlebar">
+        Manage Colors
 
-	  <div class="dlgBody">
-		<p>Nothing in here works yet. </p>
-		The aim is to have some nice way to upload images which can be used as icons or backgrounds.
-		These images are what would appear in the dropdown boxes that don't currently do anything in the Node and Map Properties dialogs. This may end up being a seperate page rather than a dialog box...       
-	  </div>
+        <ul>
+          <li><a title="Submit any changes made" id="tb_colours_submit"  class="wm_submit" >Submit</a></li>
+          <li><a title="Cancel any changes" class="wm_cancel" id="tb_colours_cancel">Cancel</a></li>
+        </ul>
+      </div>
 
-	  <div class="dlgHelp" id="images_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- Images -->
+      <div class="dlgBody">
+        Nothing in here works yet. The aim is to have a nice color picker somehow.
+        <table>
+          <tr>
+            <th>Background Color</th>
+            <td></td>
+          </tr>
+
+          <tr>
+            <th>Link Outline Color</th>
+            <td></td>
+          </tr>
+        <tr>
+        <th>Scale Colors</th>
+        <td>Some pleasant way to design the bandwidth color scale goes in here???</td>
+        </tr>
+
+        </table>
+      </div>
+
+      <div class="dlgHelp" id="colours_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- Colours -->
+
+
+    <!-- Images -->
+
+    <div id="dlgImages" class="dlgProperties">
+      <div class="dlgTitlebar">
+        Manage Images
+
+        <ul>
+          <li><a title="Submit any changes made" id="tb_images_submit"  class="wm_submit" >Submit</a></li>
+          <li><a title="Cancel any changes" class="wm_cancel" id="tb_images_cancel">Cancel</a></li>
+        </ul>
+      </div>
+
+      <div class="dlgBody">
+        <p>Nothing in here works yet. </p>
+        The aim is to have some nice way to upload images which can be used as icons or backgrounds.
+        These images are what would appear in the dropdown boxes that don't currently do anything in the Node and Map Properties dialogs. This may end up being a seperate page rather than a dialog box...
+      </div>
+
+      <div class="dlgHelp" id="images_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- Images -->
 
         <div id="dlgTextEdit" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Edit Map Object
-		<ul>
-		  <li><a title="Submit any changes made" id="tb_textedit_submit"  class="wm_submit" >Submit</a></li>
-		  <li><a title="Cancel any changes" class="wm_cancel" id="tb_textedit_cancel">Cancel</a></li>
-		</ul>
-	  </div>
+      <div class="dlgTitlebar">
+        Edit Map Object
+        <ul>
+          <li><a title="Submit any changes made" id="tb_textedit_submit"  class="wm_submit" >Submit</a></li>
+          <li><a title="Cancel any changes" class="wm_cancel" id="tb_textedit_cancel">Cancel</a></li>
+        </ul>
+      </div>
 
-	  <div class="dlgBody">
-		<p>You can edit the map items directly here.</p>
+      <div class="dlgBody">
+        <p>You can edit the map items directly here.</p>
                 <textarea wrap="no" id="item_configtext" name="item_configtext" cols=40 rows=15></textarea>
-	  </div>
+      </div>
 
-	  <div class="dlgHelp" id="images_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- TextEdit -->
-	
-	
-	<div id="dlgEditorSettings" class="dlgProperties">
-	  <div class="dlgTitlebar">
-		Editor Settings
-		<ul>
-		  <li><a title="Submit any changes made" id="tb_editorsettings_submit"  class="wm_submit" >Submit</a></li>
-		  <li><a title="Cancel any changes" class="wm_cancel" id="tb_editorsettings_cancel">Cancel</a></li>
-		</ul>
-	  </div>
+      <div class="dlgHelp" id="images_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- TextEdit -->
 
-	  <div class="dlgBody">
-		<table>
-		    <tr>
-			<th>Show VIAs overlay</th>
-			<td><select id="editorsettings_showvias" name="editorsettings_showvias">
-			  <option <?php echo ($use_overlay ? 'selected' : '') ?> value="1">Yes</option>
-			  <option <?php echo ($use_overlay ? '' : 'selected') ?> value="0">No</option>
-			    </select>
-			</td>
-		    </tr>
-		    <tr>
-			<th>Show Relative Positions overlay</th>
-			<td><select id="editorsettings_showrelative" name="editorsettings_showrelative">
-			  <option <?php echo ($use_relative_overlay ? 'selected' : '') ?> value="1">Yes</option>
-			  <option <?php echo ($use_relative_overlay ? '' : 'selected') ?> value="0">No</option>
-			    </select>
-			</td>
-		    </tr>
-		    <tr>
-			<th>Snap To Grid</th>
-			<td><select id="editorsettings_gridsnap" name="editorsettings_gridsnap">
-			    <option <?php echo ($grid_snap_value==0 ? 'selected' : '') ?> value="NO">No</option>
-			    <option <?php echo ($grid_snap_value==5 ? 'selected' : '') ?> value="5">5 pixels</option>
-			    <option <?php echo ($grid_snap_value==10 ? 'selected' : '') ?> value="10">10 pixels</option>
-			    <option <?php echo ($grid_snap_value==15 ? 'selected' : '') ?> value="15">15 pixels</option>
-			    <option <?php echo ($grid_snap_value==20 ? 'selected' : '') ?> value="20">20 pixels</option>
-			    <option <?php echo ($grid_snap_value==50 ? 'selected' : '') ?> value="50">50 pixels</option>
-			    <option <?php echo ($grid_snap_value==100 ? 'selected' : '') ?> value="100">100 pixels</option>
-			    </select>
-			</td>
-		    </tr>
-		</table>
-                
-	  </div>
 
-	  <div class="dlgHelp" id="images_help">
-		Helpful text will appear here, depending on the current
-		item selected. It should wrap onto several lines, if it's
-		necessary for it to do that.
-	  </div>
-	</div><!-- TextEdit -->
-	
-	
+    <div id="dlgEditorSettings" class="dlgProperties">
+      <div class="dlgTitlebar">
+        Editor Settings
+        <ul>
+          <li><a title="Submit any changes made" id="tb_editorsettings_submit"  class="wm_submit" >Submit</a></li>
+          <li><a title="Cancel any changes" class="wm_cancel" id="tb_editorsettings_cancel">Cancel</a></li>
+        </ul>
+      </div>
+
+      <div class="dlgBody">
+        <table>
+            <tr>
+            <th>Show VIAs overlay</th>
+            <td><select id="editorsettings_showvias" name="editorsettings_showvias">
+              <option <?php echo ($use_overlay ? 'selected' : '') ?> value="1">Yes</option>
+              <option <?php echo ($use_overlay ? '' : 'selected') ?> value="0">No</option>
+                </select>
+            </td>
+            </tr>
+            <tr>
+            <th>Show Relative Positions overlay</th>
+            <td><select id="editorsettings_showrelative" name="editorsettings_showrelative">
+              <option <?php echo ($use_relative_overlay ? 'selected' : '') ?> value="1">Yes</option>
+              <option <?php echo ($use_relative_overlay ? '' : 'selected') ?> value="0">No</option>
+                </select>
+            </td>
+            </tr>
+            <tr>
+            <th>Snap To Grid</th>
+            <td><select id="editorsettings_gridsnap" name="editorsettings_gridsnap">
+                <option <?php echo ($grid_snap_value==0 ? 'selected' : '') ?> value="NO">No</option>
+                <option <?php echo ($grid_snap_value==5 ? 'selected' : '') ?> value="5">5 pixels</option>
+                <option <?php echo ($grid_snap_value==10 ? 'selected' : '') ?> value="10">10 pixels</option>
+                <option <?php echo ($grid_snap_value==15 ? 'selected' : '') ?> value="15">15 pixels</option>
+                <option <?php echo ($grid_snap_value==20 ? 'selected' : '') ?> value="20">20 pixels</option>
+                <option <?php echo ($grid_snap_value==50 ? 'selected' : '') ?> value="50">50 pixels</option>
+                <option <?php echo ($grid_snap_value==100 ? 'selected' : '') ?> value="100">100 pixels</option>
+                </select>
+            </td>
+            </tr>
+        </table>
+
+      </div>
+
+      <div class="dlgHelp" id="images_help">
+        Helpful text will appear here, depending on the current
+        item selected. It should wrap onto several lines, if it's
+        necessary for it to do that.
+      </div>
+    </div><!-- TextEdit -->
+
+
     </form>
 </body>
 </html>

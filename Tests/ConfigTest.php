@@ -16,68 +16,68 @@ class ConfigTest extends PHPUnit_Framework_TestCase
         $previouswd = getcwd();
         chdir(dirname(__FILE__).DIRECTORY_SEPARATOR."..");
 
-		$compare_output = $comparisonimagefile.".txt";
-		if(file_exists($compare_output)) {
-		unlink($compare_output);
-		}
-		
+        $compare_output = $comparisonimagefile.".txt";
+        if(file_exists($compare_output)) {
+        unlink($compare_output);
+        }
+
         $nwarns = TestOutput_RunTest($testdir.DIRECTORY_SEPARATOR.$conffile, $outputimagefile, $outputhtmlfile, '', 'config-coverage.txt');
 
-		// if REQUIRES_VERSION was set, and set to a newer version, then this test is known to fail
-		if($nwarns < 0) {
-			$this->markTestIncomplete( 'This test is for a future feature');
-				chdir($previouswd);
-			return;
-		}
-			
+        // if REQUIRES_VERSION was set, and set to a newer version, then this test is known to fail
+        if($nwarns < 0) {
+            $this->markTestIncomplete( 'This test is for a future feature');
+                chdir($previouswd);
+            return;
+        }
+
         $this->assertEquals(0, $nwarns, "Warnings were generated");
 
-        
-		 # $COMPARE -metric AE $reference $result $destination  > $destination2 2>&1
-		$cmd = sprintf("%s -metric AE \"%s\" \"%s\" \"%s\"",
-				$compare,
-				$referenceimagefile,
-				$outputimagefile,
-				$comparisonimagefile
-				);
 
-		if(file_exists($compare)) {
+         # $COMPARE -metric AE $reference $result $destination  > $destination2 2>&1
+        $cmd = sprintf("%s -metric AE \"%s\" \"%s\" \"%s\"",
+                $compare,
+                $referenceimagefile,
+                $outputimagefile,
+                $comparisonimagefile
+                );
 
-			$fd2 = fopen($comparisonimagefile.".txt","w");
-			fwrite($fd2,$cmd."\r\n\r\n");
-			fwrite($fd2,getcwd()."\r\n\r\n");
+        if(file_exists($compare)) {
 
-			# $fd = popen($cmd,"r");
-			$descriptorspec = array(
-			   0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-			   1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-			   2 => array("pipe", "w")  // stderr is a pipe to write to
-			);
-			$pipes = array();
-			$process = proc_open($cmd,$descriptorspec, $pipes, getcwd(), NULL, array('bypass_shell'=>TRUE)) ;
-	$output = "";
+            $fd2 = fopen($comparisonimagefile.".txt","w");
+            fwrite($fd2,$cmd."\r\n\r\n");
+            fwrite($fd2,getcwd()."\r\n\r\n");
 
-			if(is_resource($process)) {
-				$output = fread($pipes[2],2000);
-				fclose($pipes[0]);
-				fclose($pipes[1]);
-				fclose($pipes[2]);
-				$return_value = proc_close($process);
-				fwrite($fd2, "Returned $return_value\r\n");
-				fwrite($fd2,"Output: |".$output."|\r\n");
-			}
+            # $fd = popen($cmd,"r");
+            $descriptorspec = array(
+               0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+               1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+               2 => array("pipe", "w")  // stderr is a pipe to write to
+            );
+            $pipes = array();
+            $process = proc_open($cmd,$descriptorspec, $pipes, getcwd(), NULL, array('bypass_shell'=>TRUE)) ;
+    $output = "";
 
-			fclose($fd2);
+            if(is_resource($process)) {
+                $output = fread($pipes[2],2000);
+                fclose($pipes[0]);
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+                $return_value = proc_close($process);
+                fwrite($fd2, "Returned $return_value\r\n");
+                fwrite($fd2,"Output: |".$output."|\r\n");
+            }
 
-		// it turns out that some versions of compare output two lines, and some don't, so trim.
-		$lines = explode("\n",$output);
-		$output = $lines[0];
+            fclose($fd2);
+
+        // it turns out that some versions of compare output two lines, and some don't, so trim.
+        $lines = explode("\n",$output);
+        $output = $lines[0];
 
                 $this->AssertEquals("0", $output, "Image Output did not match reference for $conffile via IM");
 
             }
-        
-        
+
+
        // $ref_md5 = md5_file($referenceimagefile);
        // $output_md5 = md5_file($outputimagefile);
        // $this->assertEquals($ref_md5, $output_md5, "Image Output did not match reference for $conffile via MD5");
@@ -131,14 +131,14 @@ class ConfigTest extends PHPUnit_Framework_TestCase
         // XXX This changes
         $compare = "test-suite".DIRECTORY_SEPARATOR."tools".DIRECTORY_SEPARATOR."compare.exe";
         $compare = "/usr/bin/compare";
-        
+
         if(! file_exists($result1dir)) { mkdir($result1dir); }
         if(! file_exists($result2dir)) { mkdir($result2dir); }
         if(! file_exists($diffdir)) { mkdir($diffdir); }
 
         $fd = fopen("test-suite/summary.html","w");
         fputs($fd,"<html><head><title>Test summary</title></head><style>img {border: 1px solid black; }</style><body><h3>Test Summary</h3>(result - reference - diff)<br/>\n");
-        
+
         $conflist = array();
 
         $dh = opendir($testdir);
@@ -162,15 +162,15 @@ class ConfigTest extends PHPUnit_Framework_TestCase
                     fputs($fd,"<em>$title</em>");
 
                     fputs($fd,"<p><nobr><img src='results1-$phptag/$file.png'> <img src='references/$file.png'> <img src='diffs/$file.png'></nobr></p>\n");
-                    
+
                 }
             }
         }
         chdir($previouswd);
 
-	fputs($fd,"</body></html>");
+    fputs($fd,"</body></html>");
         fclose($fd);
- 
+
         return $conflist;
     }
 }

@@ -62,7 +62,7 @@ class HTML_ImageMap_Area_PolygonTest extends PHPUnit_Framework_TestCase {
 
         foreach ($this->objects as $object) {
 
-            
+
         }
 
         // Remove the following lines when you implement this test.

@@ -3,11 +3,11 @@
       $php_version = phpversion();
       $mem_allowed = ini_get("memory_limit");
       $php_os = php_uname();
-      
+
       $mem_warning = "";
       $mem_allowed_int = return_bytes($mem_allowed);
       if(($mem_allowed_int>0) && ($mem_allowed_int < 32000000)) { $mem_warning='You should increase this value to at least 32M. '; }
-      
+
       // capture the PHP "General Info" table
       ob_start();
       phpinfo(INFO_GENERAL);
@@ -30,7 +30,7 @@
                   $php_general[$name] = $value;
             }
       }
-      
+
       $ini_file = $php_general['Loaded Configuration File'];
       $extra_ini = php_ini_scanned_files();
       if($extra_ini != '')
@@ -52,32 +52,32 @@
             else
             {
                   $gdstring="This PHP uses the system GD library, which MIGHT have alpha-blending bugs. Check that you have at least GD 2.0.34 installed, if you see problems with weathermap segfaulting.\n";
-		  $gdstring .= "You can test for this specific fault by running check-gdbug.php\n";
+          $gdstring .= "You can test for this specific fault by running check-gdbug.php\n";
             }
       }
       else
       {
-	      $gdstring = "The gdinfo() function is not available, which means that either the GD extension is not available, not enabled, or not installed.\n";
-	      }
+          $gdstring = "The gdinfo() function is not available, which means that either the GD extension is not available, not enabled, or not installed.\n";
+          }
 
   if(isset($argv))
   {
-	$environment = "CLI";
-    print "\n----------------------------------------------------\nWeathermap Pre-Install Checker\n\n";     
-	print "This script checks for some common problems with your PHP and server\nenvironment that may stop Weathermap or the Editor from working.\n\n";
-	print "NOTE: You should run this script as both a web page AND from the\ncommand-line, as the environment can be different in each.\n";
+    $environment = "CLI";
+    print "\n----------------------------------------------------\nWeathermap Pre-Install Checker\n\n";
+    print "This script checks for some common problems with your PHP and server\nenvironment that may stop Weathermap or the Editor from working.\n\n";
+    print "NOTE: You should run this script as both a web page AND from the\ncommand-line, as the environment can be different in each.\n";
         print "\nThis is the PHP version that is responsible for \n* creating maps from the Cacti poller\n* the command-line weathermap tool\n\n";
         print "PHP Basics\n----------\n";
         print wordwrap("This is PHP Version $php_version running on \"$php_os\" with a memory_limit of '$mem_allowed'. $mem_warning\n");
         print "\nThe php.ini file was $ini_file\n$extra_ini\n\n";
         print "";
-	print "PHP Functions\n-------------\n";
+    print "PHP Functions\n-------------\n";
         print "Some parts of Weathermap need special support in your PHP\ninstallation to work.\n\n";
-	print wordwrap($gdstring)."\n";
+    print wordwrap($gdstring)."\n";
   }
   else
   {
-	$environment = "web";
+    $environment = "web";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -93,53 +93,53 @@
     </style>
 </head>
 <body>
-    
+
     <h1>Weathermap Pre-install Checker</h1>
-    
+
     <p>This page checks for some common problems with your PHP and server environment that may stop Weathermap or the Editor from working.</p>
-	<p>NOTE: You should run this script as a web page AND from the command-line, as the environment can be different in each.</p>
+    <p>NOTE: You should run this script as a web page AND from the command-line, as the environment can be different in each.</p>
       <h2>PHP Basics</h2><p>This is the PHP version that is responsible for</p><ul>
       <li>The web-based editor</li><li>Building maps with Rebuild Now from Cacti</li></ul>
       <p>This is PHP Version <?php echo $php_version ?> running on "<?php echo $php_os ?>" with a memory_limit of '<?php echo $mem_allowed ?>'. <?php echo $mem_warning ?></p>
       <p>The php.ini file was <?php echo $ini_file ?></p>
       <p><?php echo $extra_ini ?></p>
-      	<h2>PHP Functions</h2>
+          <h2>PHP Functions</h2>
     <p>Some parts of Weathermap need special support in your PHP installation to work.</p>
     <?php echo $gdstring; ?>
-	<table>
-<?php	
+    <table>
+<?php
   }
-       
+
     $critical=0;
     $noncritical=0;
 
-      
-    
+
+
     # critical, what-it-affects, what-it-is
     $functions = array('imagepng' => array(TRUE,FALSE,'all of Weathermap','part of the GD library and the "gd" PHP extension'),
                   'imagecreatetruecolor' => array(TRUE,FALSE,'all of Weathermap','part of the GD library and the "gd" PHP extension'),
                   'imagealphablending' => array(TRUE,FALSE,'all of Weathermap','part of the GD library and the "gd" PHP extension'),
                   'imageSaveAlpha' => array(TRUE,FALSE,'all of Weathermap','part of the GD library and the "gd" PHP extension'),
-                  'preg_match'=> array(TRUE,FALSE,'configuration reading','provided by the "pcre" extension')    ,              
+                  'preg_match'=> array(TRUE,FALSE,'configuration reading','provided by the "pcre" extension')    ,
                   'imagecreatefrompng' => array(TRUE,FALSE,'all of Weathermap','part of the GD library and the "gd" PHP extension'),
-                  
+
                   'imagecreatefromjpeg' => array(FALSE,FALSE,'JPEG input support for ICON and BACKGROUND','an optional part of the GD library and the "gd" PHP extension'),
                   'imagecreatefromgif' => array(FALSE,FALSE,'GIF input support for ICON and BACKGROUND','an optional part of the GD library and the "gd" PHP extension'),
                   'imagejpeg' => array(FALSE,FALSE,'JPEG output support','an optional part of the GD library and the "gd" PHP extension'),
                   'imagegif' => array(FALSE,FALSE,'GIF output support','an optional part of the GD library and the "gd" PHP extension'),
-		  # 'imagefilter' => array(FALSE, FALSE, 'colorizing icons','a special function of the PHP-supplied GD library ONLY (not the external GD library'.($gdbuiltin?'':' that you are using').')'),
-		  'imagecopyresampled' => array(FALSE,FALSE,'Thumbnail creation in the Cacti plugin','an optional part of the GD library and the "gd" PHP extension'),
+          # 'imagefilter' => array(FALSE, FALSE, 'colorizing icons','a special function of the PHP-supplied GD library ONLY (not the external GD library'.($gdbuiltin?'':' that you are using').')'),
+          'imagecopyresampled' => array(FALSE,FALSE,'Thumbnail creation in the Cacti plugin','an optional part of the GD library and the "gd" PHP extension'),
                   'imagettfbbox' => array(FALSE,FALSE,'TrueType font support','an optional part of the GD library and the "gd" PHP extension'),
-                  'memory_get_usage' => array(FALSE,TRUE,'memory-usage debugging','not supported on all PHP versions and platforms')                 
-                );    
-    
-	$results=array();
-	
+                  'memory_get_usage' => array(FALSE,TRUE,'memory-usage debugging','not supported on all PHP versions and platforms')
+                );
+
+    $results=array();
+
       if($environment == 'CLI')
       {
             // Console_Getopt is only needed by the CLI tool.
             $included = @include_once 'Console/Getopt.php';
-            
+
             if($included != 1)
             {
                   $noncritical++;
@@ -149,91 +149,91 @@
             {
                   print wordwrap("The Console_Getopt PEAR module is available. That's good!\n\n");
             }
-            
+
       }
-        
+
    foreach ($functions as $function=>$details)
     {
-		$exists = ""; $notes="";
-	    if($environment=='web') print "<tr><td align=right>$function()</td>";
-	
+        $exists = ""; $notes="";
+        if($environment=='web') print "<tr><td align=right>$function()</td>";
+
         if(function_exists($function))
         {
-			$exists = "YES";
+            $exists = "YES";
             if($environment=='web') print "<td><img alt=\"YES\" src=\"images/tick.png\" /></td>";
         }
         else
-        {            
-			$exists = "NO";
+        {
+            $exists = "NO";
             if($details[0])
             {
-			    $notes .= "CRITICAL.   ";
+                $notes .= "CRITICAL.   ";
                 if($environment=='web') print "<td><img alt=\"NO\" src=\"images/exclamation.png\" /><b>CRITICAL</b> ";
                 $critical++;
             } else {
                 if(!$details[1])
                 {
-				   $notes .= "Non-Critical.   ";
+                   $notes .= "Non-Critical.   ";
                     if($environment=='web') print "<td><img  alt=\"NO\" src=\"images/cross.png\" /><i>non-critical</i>  ";
                     $noncritical++;
                 }
                 else
                 {
-					$notes .= "Minor.   ";
+                    $notes .= "Minor.   ";
                     if($environment=='web') print "<td><img alt=\"NO\" src=\"images/cross.png\" /><i>minor</i>  ";
                 }
             }
-			$explanation = "This is required for ".$details[2].". It is ".$details[3].".";
-			$notes .= $explanation;
-            
+            $explanation = "This is required for ".$details[2].". It is ".$details[3].".";
+            $notes .= $explanation;
+
             if($environment=='web') print "$explanation</td>";
         }
         if($environment=='web') print "</tr>\n";
-		else
-		{
-		    $wnotes = wordwrap($notes,50);
-			$lines = explode("\n",$wnotes);
-			$i=0;
-			foreach ($lines as $noteline)
-			{
-				if($i==0)
-				{
-					print sprintf("%20s %5s %-52s\n",$function,$exists,$noteline);
-					$i++;
-				}
-				else
-				{
-					print sprintf("%20s %5s %-52s\n","","",$noteline);
-					$i++;
-				}
-			}
-		}		
-    }
-        
-    if($environment=='web') print "</table>";
-    
-    if( ($critical + $noncritical) > 0)
-    {
-	    if($environment=='web') 
-		{
-        print "<p>If these functions are not found, you may need to <ul><li>check that the 'extension=' line for that extension is uncommented in your php.ini file (then restart your webserver), or<li>install the extension, if it isn't installed already</ul>On Debian/Ubuntu systems, you may also need to use the php5enmod command to enable the extension.</p>";
-		}
-		else
-		{
-			print "\nIf these functions are not found, you may need to\n * check that the 'extension=' line for that extension is uncommented in\n   your php.ini file (then restart your webserver), or\n * install the extension, if it isn't installed already\n\n";
-		}
-		
-        print wordwrap("The details of how this is done will depend on your operating system, and on where you installed (or compiled) your PHP from originally. Usually, you would install an RPM, or other package on Linux systems, a port on *BSD, or a DLL on Windows. If you build PHP from source, you need to add extra options to the './configure' line. Consult your PHP documention for more information.\n");
-		if($environment=='web') print "</p>";
+        else
+        {
+            $wnotes = wordwrap($notes,50);
+            $lines = explode("\n",$wnotes);
+            $i=0;
+            foreach ($lines as $noteline)
+            {
+                if($i==0)
+                {
+                    print sprintf("%20s %5s %-52s\n",$function,$exists,$noteline);
+                    $i++;
+                }
+                else
+                {
+                    print sprintf("%20s %5s %-52s\n","","",$noteline);
+                    $i++;
+                }
+            }
+        }
     }
 
-	if($environment=="CLI") print "\n---------------------------------------------------------------------\n";
-			
+    if($environment=='web') print "</table>";
+
+    if( ($critical + $noncritical) > 0)
+    {
+        if($environment=='web')
+        {
+        print "<p>If these functions are not found, you may need to <ul><li>check that the 'extension=' line for that extension is uncommented in your php.ini file (then restart your webserver), or<li>install the extension, if it isn't installed already</ul>On Debian/Ubuntu systems, you may also need to use the php5enmod command to enable the extension.</p>";
+        }
+        else
+        {
+            print "\nIf these functions are not found, you may need to\n * check that the 'extension=' line for that extension is uncommented in\n   your php.ini file (then restart your webserver), or\n * install the extension, if it isn't installed already\n\n";
+        }
+
+        print wordwrap("The details of how this is done will depend on your operating system, and on where you installed (or compiled) your PHP from originally. Usually, you would install an RPM, or other package on Linux systems, a port on *BSD, or a DLL on Windows. If you build PHP from source, you need to add extra options to the './configure' line. Consult your PHP documention for more information.\n");
+        if($environment=='web') print "</p>";
+    }
+
+    if($environment=="CLI") print "\n---------------------------------------------------------------------\n";
+
     if($critical>0)
     {
         if($environment=='web') print "<div class=\"critical\">";
-		print wordwrap("There are problems with your PHP or server environment that will stop Weathermap from working. You need to correct these issues if you wish to use Weathermap.\n");
-		if($environment=='web') print "</div>";
+        print wordwrap("There are problems with your PHP or server environment that will stop Weathermap from working. You need to correct these issues if you wish to use Weathermap.\n");
+        if($environment=='web') print "</div>";
     }
     else
     {
@@ -253,7 +253,7 @@
         }
     }
       if($environment=='web') print "</body></html>";
-      
+
       function return_bytes($val) {
       $val = trim($val);
       if($val != '')
@@ -268,11 +268,11 @@
           case 'k':
               $val *= 1024;
     }
-    	}
-	else
-	{
-		$val = 0;
-	}
+        }
+    else
+    {
+        $val = 0;
+    }
 
     return $val;
 }

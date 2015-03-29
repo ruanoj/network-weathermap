@@ -43,22 +43,22 @@ class HTML_ImageMap_Area_CircleTest extends PHPUnit_Framework_TestCase {
      */
     public function testHitTest() {
 
-	$points = array(
-		array(100,100,True),
-		array(51,100,True),
-		array(149,100,True),
-		array(100,149,True),
-		array(100,51,True),
-		array(49,49,False),
-		array(49,100,False),
-		array(100,151,False),
-		array(149,149,False)
-	);
+    $points = array(
+        array(100,100,True),
+        array(51,100,True),
+        array(149,100,True),
+        array(100,149,True),
+        array(100,51,True),
+        array(49,49,False),
+        array(49,100,False),
+        array(100,151,False),
+        array(149,149,False)
+    );
 
-	foreach ($points as $point) {
-		$desc = sprintf("Hit %d,%d", $point[0], $point[1]);
-		$this->assertEquals($point[2],  $this->object->hitTest($point[0], $point[1]), $desc);
-	}
+    foreach ($points as $point) {
+        $desc = sprintf("Hit %d,%d", $point[0], $point[1]);
+        $this->assertEquals($point[2],  $this->object->hitTest($point[0], $point[1]), $desc);
+    }
 
     }
 }
