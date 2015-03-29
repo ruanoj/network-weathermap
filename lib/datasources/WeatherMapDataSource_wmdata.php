@@ -49,7 +49,7 @@ class WeatherMapDataSource_wmdata extends WeatherMapDataSource
                 } else {
                     wm_warn("WMData ReadData: Data name ($dataname) didn't exist in ($datafile). [WMWMDATA03]\n");
                 }
-                
+
             } else {
                 wm_warn("WMData ReadData: Couldn't open ($datafile). [WMWMDATA02]\n");
             }
@@ -60,10 +60,10 @@ class WeatherMapDataSource_wmdata extends WeatherMapDataSource
 
 
         wm_debug( sprintf("WMData ReadData: Returning (%s, %s, %s)\n",
-		        string_or_null($data[IN]),
-		        string_or_null($data[OUT]),
-		        $data_time
-        	));
+                string_or_null($data[IN]),
+                string_or_null($data[OUT]),
+                $data_time
+            ));
 
         return (array (
             $data[IN],

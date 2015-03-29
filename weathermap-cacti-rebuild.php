@@ -22,7 +22,7 @@ elseif( is_dir($cacti_base) && file_exists($cacti_base."/include/config.php") )
 }
 else
 {
-	print "Couldn't find a usable Cacti config";
+    print "Couldn't find a usable Cacti config";
 }
 
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."setup.php");

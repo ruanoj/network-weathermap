@@ -4,11 +4,11 @@
 
 class WeatherMapPreProcessorExample extends WeatherMapPreProcessor {
 
-	function run(&$map)
-	{
-		$map->add_note('test','TEST!');
-		wm_debug("Example Preprocessor in the hizouse\n");
-	}
+    function run(&$map)
+    {
+        $map->add_note('test','TEST!');
+        wm_debug("Example Preprocessor in the hizouse\n");
+    }
 
 }
 

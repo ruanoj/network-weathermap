@@ -308,9 +308,9 @@ $WM_config_keywords2 = array (
             ),
         ),
         'ORIGIN' => array(
-            array('NODE', 
+            array('NODE',
                 "/^ORIGIN\s+(C|NE|SE|NW|SW|N|S|E|W)/i",
-                array("position_origin" => 1)                
+                array("position_origin" => 1)
             )
         ),
         'POSITION' => array (

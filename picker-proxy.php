@@ -6,9 +6,9 @@
     switch ($action)
     {
         case 'list_collections':
-                        
+
             break;
-       
+
 
         default:
             print "{result: 0}";
