@@ -56,6 +56,12 @@ are really facets of the same thing - lack of input validation. 0.97b improves t
 
 Thanks to Gerry Eisenhaur and Daniel Ricardo dos Santos respectively for their security bug reports.
 
+2015-07-18
+    ADDED - Watch4net datasource plugin
+    FIXED - PHP deprecation errors ("Use of non-static method PEAR:isError")
+2015-03-29
+    ADDED - additional target detection for RRD files
+    CHANGE - removed blank at the end of lines; tabs converted to spaces
 0.97b	FIXED - absolute SCALE definitions didn't support K (thanks wwwdrich)
     FIXED - memory leak in poller code. Memory usage is MUCH lower now.
     FIXED - updated mysql schema commands to use modern ENGINE instead of TYPE;
