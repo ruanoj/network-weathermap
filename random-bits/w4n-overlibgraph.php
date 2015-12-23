@@ -6,8 +6,8 @@
 // Released under the GNU Public License
 /*
 
-  This is a simple hook into W4N to retrieve ifInOctets and ifOutOctets and graph them 
-  as Gigabits per second, provided as a complement to the W4N datasource.
+  This is a simple hook into W4N to, by default, retrieve ifInOctets and ifOutOctets 
+  and graph them as Gigabits per second, provided as a complement to the W4N datasource.
 
   Assuming you have defined the hints "source_router" and "source_interface" on a LINK
   entry, the OVERLIBGRAPH would be something like this:
@@ -16,6 +16,9 @@
 
   Note that as a URL, it needs to be provided encoded. The raw parameter is
   filter=device=='devicename'&part=='interface'.
+
+  If other than ifInOctets/ifOutOctets are required, put the expression as 'name' HTTP
+  FORM parameter. Unit conversion to 'Gbps' is not done if 'name' is non-empty.
 
  */
 
@@ -43,25 +46,36 @@ define('REP_WS_NS',       'http://www.watch4net.com/APG/Remote/ReportManagerServ
 
 Header('Content-type: image/png');
 
+$filter = '';
+$name = '';
+$end = 0;
+$start = 0;
+$width = 500;
+$height = 300;
+$scale = 1.0;
+$convertUnits = TRUE;
+
 // retrieve filter param
 if(isset($_GET['filter'])) {
   $filter = $_GET['filter'];
-} else {
-  $filter = '';
 }
 if (get_magic_quotes_gpc()) {
     $filter = stripslashes($filter);
 }
+if(isset($_GET['name']) && $_GET['name']!="") {
+  $name = "&(name=='".stripslashes($_GET['name'])."')";
+  $convertUnits = FALSE;
+} else {
+  $name = "&(name=='ifInOctets' | name=='ifOutOctets')";
+}
 if(strlen($filter) == 0) {
   $filter = '!(*)';
 } else {
-  $filter = $filter . " & (name=='ifInOctets' | name=='ifOutOctets')";
+  $filter = $filter . $name;
 }
 // retrieve end timestamp param
 if(isset($_GET['end'])) {
   $end = $_GET['end'];
-} else {
-  $end = 0;
 }
 if($end == 0) {
     $end = time();
@@ -71,8 +85,6 @@ if($end == 0) {
 // retrieve start timestamp param
 if(isset($_GET['start'])) {
   $start = $_GET['start'];
-} else {
-  $start = 0;
 }
 if($start == 0) {
     $start = $end - 86400;
@@ -82,20 +94,14 @@ if($start == 0) {
 // retrieve width param
 if(isset($_GET['width'])) {
   $width = $_GET['width'];
-} else {
-  $width = 500;
 }
 // retrieve width param
 if(isset($_GET['height'])) {
   $height = $_GET['height'];
-} else {
-  $height = 300;
 }
 // retrieve scale param
 if(isset($_GET['scale'])) {
   $scale = $_GET['scale'];
-} else {
-  $scale = 1.0;
 }
 
 // create the SoapClient object using the WSDL location and the service credentials
@@ -116,7 +122,7 @@ $properties = array(
     )
 );
 
-// This is a workaround to the fact that I couldn't find a way to put two formulas under 'formula' 
+// This is a workaround to the fact that I couldn't find a way to put two formulas under 'formula'
 // on the node, as it did not like any array.
 // These formulas will convert from Octets/s to Gbits/s
 $formulae=new SoapVar(
@@ -151,9 +157,11 @@ $node = array(
             array('timeRangeExpression' => 'r:' . $start . ':' . $end . ':0'),
                 XSD_ANYTYPE, 'RuntimePreferences', XML_TREE_NS)
     )
-    ,
-  'formula' => $formulae,
 );
+# Add conversion if required
+if ($convertUnits == TRUE) {
+  $node['formula']=$formulae;
+}
 
 // call the service and convert objects to array
 $response = objtoarray($client->getReport(array( 'properties' => $properties, 'node' => $node)));
