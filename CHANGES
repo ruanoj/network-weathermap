@@ -9,6 +9,8 @@ are really facets of the same thing - lack of input validation. 0.97b improves t
 
 Thanks to Gerry Eisenhaur and Daniel Ricardo dos Santos respectively for their security bug reports.
 
+2015-12-23
+    CHANGE - Watch4net plugin improvements
 2015-07-18
     ADDED - Watch4net datasource plugin
     FIXED - PHP deprecation errors ("Use of non-static method PEAR:isError")
