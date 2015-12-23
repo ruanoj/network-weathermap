@@ -9,37 +9,41 @@
 // https://github.com/ruanoj/network-weathermap
 // Released under the GNU Public License
 
+$filter = '';
+$name = '';
+$end = 0;
+$start = 0;
+$width = 500;
+$height = 300;
+$scale = 1.0;
 
 // retrieve filter param
 if(isset($_GET['filter'])) {
   $filter = $_GET['filter'];
-} else {
-  $filter = '';
 }
 // retrieve width param
 if(isset($_GET['width'])) {
   $width = $_GET['width'];
-} else {
-  $width = 500;
 }
 // retrieve width param
 if(isset($_GET['height'])) {
   $height = $_GET['height'];
-} else {
-  $height = 300;
 }
 // retrieve scale param
 if(isset($_GET['scale'])) {
   $scale = $_GET['scale'];
-} else {
-  $scale = 1.0;
+}
+// retrieve specific property
+if(isset($_GET['name'])) {
+  $name = $_GET['name'];
 }
 
- $_baseURL = "w4n-overlibgraph.php?filter=" . urlencode($filter) . "&width=$width&height=$height&scale=" . urlencode($scale);
+$_printableFilter = "$filter&name=$name";
+$_baseURL = "w4n-overlibgraph.php?filter=".urlencode($filter)."&width=$width&height=$height&name=".urlencode($name)."&scale=".urlencode($scale);
 ?>
-<html><head><title><?= $filter; ?> - Usage Statistics</title>
+<html><head><title><?= $_printableFilter; ?> - Statistics</title>
 <body bgcolor="#ffffff">
-<h3><?= $filter; ?></h3>
+<h3><?= $_printableFilter; ?></h3>
 <p>Last four hours:<br/>
 <img border="0" src="<?= $_baseURL; ?>&start=-14400" /></p>
 <p>Last 24 hours:<br/>
