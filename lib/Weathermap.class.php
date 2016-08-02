@@ -5517,6 +5517,7 @@ function WriteConfig($filename)
     return (true);
 }
 
+        // by here, we should have a valid image handle
 
 function DrawMap($filename = '', $thumbnailfile = '', $thumbnailmax = 250, $withnodes = TRUE, $use_via_overlay = FALSE, $use_rel_overlay=FALSE)
 {

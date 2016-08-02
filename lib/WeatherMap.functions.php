@@ -2789,7 +2789,9 @@ function wimagecreatetruecolor($width, $height)
 
     return imagecreatetruecolor($width,$height);
 
-}
+    // the 1.2 here is empirical. It ought to be 1 in theory.
+    // in practice, a link this short is useless anyway, especially with bwlabels.
+    $minimumlength = 1.2*($arrowsize[IN]+$arrowsize[OUT]);
 
 function wimagettftext($image, $size, $angle, $x, $y, $color, $file, $string)
 {
